@@ -14,7 +14,7 @@ class Obstacle {
     };
 
     this.img = new Image();
-    this.img.src = "assets/obstacles/rock.png";
+    this.img.src = "assets/obstacles/spike.png";
   }
 
   draw(ctx, cameraX, playerX) {
@@ -32,3 +32,4 @@ class Obstacle {
     };
   }
 }
+
