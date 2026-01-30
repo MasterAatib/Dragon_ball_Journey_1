@@ -1,7 +1,7 @@
 class Obstacle {
   constructor(worldX) {
     this.worldX = worldX;
-    this.y = 570;
+    this.y = 560;
 
     this.width = 64;
     this.height = 64;
@@ -9,7 +9,7 @@ class Obstacle {
     this.hitbox = {
       xOffset: 10,
       yOffset: 10,
-      width: 44,
+      width: 40,
       height: 44
     };
 
@@ -32,4 +32,5 @@ class Obstacle {
     };
   }
 }
+
 
