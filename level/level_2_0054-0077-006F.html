@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kid Goku Run – Level 2</title>
+<title>Level 2</title>
 
 <style>
 body {
@@ -81,7 +81,7 @@ canvas {
 </div>
 
 <canvas id="gameCanvas" width="1024" height="720"></canvas>
-<button id="jumpBtn">JUMP</button>
+<button id="jumpBtn">Double<br>JUMP</button>
 
 <script>
 /* ================= INPUT ================= */
@@ -126,10 +126,10 @@ class Player {
     this.frameInterval = 6;
 
     this.runImg = new Image();
-    this.runImg.src = "assets/player/run.png";
+    this.runImg.src = "../assets/player/run.png";
 
     this.jumpImg = new Image();
-    this.jumpImg.src = "assets/player/jump.png";
+    this.jumpImg.src = "../assets/player/jump.png";
     this.jumpFrame = 0;
   }
 
@@ -210,7 +210,7 @@ class Obstacle {
     this.height = 128;
 
     this.img = new Image();
-    this.img.src = "assets/obstacles/rock.png";
+    this.img.src = "../assets/obstacles/rock.png";
   }
 
   draw(ctx, camX, playerX) {
@@ -234,10 +234,10 @@ const canvas = gameCanvas;
 const ctx = canvas.getContext("2d");
 
 const bg = new Image();
-bg.src = "assets/background/background_1.png";
+bg.src = "../assets/background/background_1.png";
 
 const flagImg = new Image();
-flagImg.src = "assets/ui/flag_2.png";
+flagImg.src = "../assets/ui/flag_2.png";
 
 const LEVEL_END_X = 6000;
 const GROUND_Y = 570;
@@ -321,4 +321,5 @@ function gameLoop() {
 gameLoop();
 </script>
 </body>
+
 </html>
