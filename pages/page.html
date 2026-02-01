@@ -135,10 +135,10 @@ class Player {
     this.frameInterval = 6;
 
     this.runImg = new Image();
-    this.runImg.src = "./assets/player/run.png";
+    this.runImg.src = "../assets/player/run.png";
 
     this.jumpImg = new Image();
-    this.jumpImg.src = "./assets/player/jump.png";
+    this.jumpImg.src = "../assets/player/jump.png";
   }
 
   update() {
@@ -200,7 +200,7 @@ class Obstacle {
     this.hitbox = { xOffset: 10, yOffset: 10, width: 44, height: 44 };
 
     this.img = new Image();
-    this.img.src = "./assets/obstacles/spike.png";
+    this.img.src = "../assets/obstacles/spike.png";
   }
 
   draw(ctx, camX, playerX) {
@@ -223,10 +223,10 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const bg = new Image();
-bg.src = "./assets/background/background_1.png";
+bg.src = "../assets/background/background_1.png";
 
 const flagImg = new Image();
-flagImg.src = "./assets/ui/flag_1.png";
+flagImg.src = "../assets/ui/flag_1.png";
 
 const MENU = 0, PLAYING = 1, GAME_OVER = 2, WIN = 3;
 let gameState = MENU;
@@ -311,4 +311,5 @@ gameLoop();
 </body>
 
 </html>
+
 
