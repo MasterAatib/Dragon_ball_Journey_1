@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="assets/icon/level_1_icon.png" />
+<title>Dragon Ball Journey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg: #0b1020;
+  --card: #121a33;
+  --glow: #00bfff;
+  --text: #e6eaff;
+  --muted: #8fa3ff;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #101a3d, var(--bg));
+  color: var(--text);
+}
+
+/* ---------- Title ---------- */
+.title-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 20px;
+}
+
+.title-container img {
+  max-width: 600px;
+  width: 80%;
+  filter: drop-shadow(0 0 20px rgba(0,191,255,.5));
+}
+
+/* ---------- Cards ---------- */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  display: flex;
+  gap: 20px;
+  background: linear-gradient(145deg, #0b0029, #101d38);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  cursor: pointer;
+  transition: .3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px rgba(0,191,255,.25);
+}
+
+.card img {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Progress ---------- */
+.progress {
+  height: 6px;
+  background: rgba(255,255,255,.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, #00ffea, #2616ff);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  text-align: center;
+  opacity: .6;
+  font-size: 13px;
+  padding: 30px 0;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 700px) {
+  .card {
+    flex-direction: column;
+  }
+
+  .card img {
+    width: 100%;
+    height: 160px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- TITLE IMAGE -->
+<div class="title-container">
+  <!-- Replace with your Dragon Ball Journey logo -->
+  <img src=".\assets\icon\DBJ_logo.png" alt="Dragon Ball Journey">
+</div>
+
+<!-- CARDS -->
+<div class="container">
+
+  <div class="card" onclick="openLink('https://example.com/level1')">
+    <img src=".\assets\icon\level_1_icon.png">
+    <div class="card-content">
+      <h2>Ep 1: Morning Walk & unexpected encounter</h2>
+      <p>Difficulty: Easy</p>
+      <p>Begin Goku’s journey through his daily routine.</p>
+      <div class="progress"><span style="width: 100%"></span></div>
+    </div>
+  </div>
+
+  <div class="card" onclick="openLink('https://example.com/level2')">
+    <img src=".\assets\icon\level_2_icon.png">
+    <div class="card-content">
+      <h2>Ep 2: Grandpa and 4 Star Dragon Ball</h2>
+      <p>Difficulty: Easy</p>
+      <p>Return home and show the Dragon Ball to new guest you met.<br>[You can Now DOUBLE JUMP in this level]</p>
+      <div class="progress"><span style="width: 98%"></span></div>
+    </div>
+  </div>
+
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+  <div class="card" onclick="openLink('https://example.com/level3')">
+    <img src="https://i.imgur.com/W7K9R8R.jpg">
+    <div class="card-content">
+      <h2>Coming Soon</h2>
+      <p>Difficulty: Expert</p>
+      <p>Endless training. Extreme power growth.</p>
+      <div class="progress"><span style="width: 20%"></span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  © 2026 Dragon Ball Journey (Fan Project)
+</div>
+
+<script>
+function openLink(url) {
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
