@@ -118,10 +118,10 @@ class Player {
     this.jumpFrame = 0;
 
     this.runImg = new Image();
-    this.runImg.src = "assets/player/turtle_run.png";
+    this.runImg.src = "../assets/player/turtle_run.png";
 
     this.jumpImg = new Image();
-    this.jumpImg.src = "assets/player/turtle_jump.png";
+    this.jumpImg.src = "../assets/player/turtle_jump.png";
   }
 
   update() {
@@ -205,7 +205,7 @@ class Obstacle {
     this.y = GROUND_Y - this.height;
 
     this.img = new Image();
-    this.img.src = "assets/obstacles/rock.png";
+    this.img.src = "../assets/obstacles/rock.png";
   }
 
   draw(ctx, camX, playerX) {
@@ -229,10 +229,10 @@ const canvas = gameCanvas;
 const ctx = canvas.getContext("2d");
 
 const bg = new Image();
-bg.src = "assets/background/background_1.png";
+bg.src = "../assets/background/background_1.png";
 
 const flagImg = new Image();
-flagImg.src = "assets/ui/flag_3.png";
+flagImg.src = "../assets/ui/flag_3.png";
 
 const LEVEL_END_X = 7200;
 
@@ -313,3 +313,4 @@ gameLoop();
 </script>
 </body>
 </html>
+
