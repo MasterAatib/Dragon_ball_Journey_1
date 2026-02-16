@@ -127,7 +127,7 @@ class Player {
     this.frameInterval = 6;
 
     this.flyImg = new Image();
-    this.flyImg.src = "assets/player/nimbus_fly.png";
+    this.flyImg.src = "../assets/player/nimbus_fly.png";
   }
 
   update() {
@@ -182,8 +182,8 @@ class AirObstacle {
     this.img = new Image();
     this.img.src =
       type === "bird"
-        ? "assets/obstacles/bird_fly.png"
-        : "assets/obstacles/crow_fly.png";
+        ? "../assets/obstacles/bird_fly.png"
+        : "../assets/obstacles/crow_fly.png";
   }
 
   update() {
@@ -219,10 +219,10 @@ const canvas = gameCanvas;
 const ctx = canvas.getContext("2d");
 
 const bg = new Image();
-bg.src = "assets/background/sky_1.png";
+bg.src = "../assets/background/sky_1.png";
 
 const flagImg = new Image();
-flagImg.src = "assets/ui/flag_4.png";
+flagImg.src = "../assets/ui/flag_4.png";
 
 const LEVEL_END_X = 10000;
 
@@ -305,3 +305,4 @@ gameLoop();
 </script>
 </body>
 </html>
+
