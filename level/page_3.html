@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kid Goku Run – Level 3</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+}
+canvas {
+  width: 100vw;
+  height: 100vh;
+  image-rendering: pixelated;
+}
+#jumpBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 16px 26px;
+  font-size: 18px;
+}
+#ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: rgba(0,0,0,0.85);
+  pointer-events: auto;
+}
+.screen.active { display: flex; }
+.title {
+  font-size: 56px;
+  color: white;
+  margin-bottom: 30px;
+}
+.pixel-btn {
+  padding: 14px 30px;
+  font-size: 20px;
+  background: black;
+  color: white;
+  border: 4px solid white;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+  <div id="menu" class="screen active">
+    <h1 class="title">LEVEL 3</h1>
+    <button class="pixel-btn" id="startBtn">START</button>
+  </div>
+
+  <div id="win" class="screen">
+    <h1 class="title">LEVEL COMPLETE</h1>
+    <button class="pixel-btn" onclick="location.reload()">RESTART</button>
+  </div>
+
+  <div id="gameOver" class="screen">
+    <h1 class="title">GAME OVER</h1>
+    <button class="pixel-btn" onclick="location.reload()">RETRY</button>
+  </div>
+</div>
+
+<canvas id="gameCanvas" width="1024" height="720"></canvas>
+<button id="jumpBtn">JUMP</button>
+
+<script>
+/* ================= INPUT (UNCHANGED) ================= */
+let jumpPressed = false;
+
+window.addEventListener("keydown", e => {
+  if (e.code === "Space") jumpPressed = true;
+});
+window.addEventListener("keyup", e => {
+  if (e.code === "Space") jumpPressed = false;
+});
+jumpBtn.onclick = () => {
+  jumpPressed = true;
+  setTimeout(() => jumpPressed = false, 120);
+};
+
+/* ================= PLAYER (UNCHANGED) ================= */
+class Player {
+  constructor() {
+    this.x = 150;
+    this.y = 500;
+
+    this.width = 128;
+    this.height = 128;
+
+    this.hitbox = { xOffset: 30, yOffset: 20, width: 70, height: 90 };
+
+    this.velocityY = 0;
+    this.gravity = 1.4;
+
+    this.jumpForce = -30;
+    this.doubleJumpForce = -24;
+
+    this.maxJumps = 2;
+    this.jumpCount = 0;
+
+    this.frameX = 0;
+    this.frameTimer = 0;
+    this.frameInterval = 4;
+
+    this.jumpFrame = 0;
+
+    this.runImg = new Image();
+    this.runImg.src = "assets/player/turtle_run.png";
+
+    this.jumpImg = new Image();
+    this.jumpImg.src = "assets/player/turtle_jump.png";
+  }
+
+  update() {
+    if (jumpPressed && this.jumpCount < this.maxJumps) {
+      this.velocityY =
+        this.jumpCount === 0 ? this.jumpForce : this.doubleJumpForce;
+
+      this.jumpFrame = Math.floor(Math.random() * 4);
+      this.jumpCount++;
+      jumpPressed = false;
+    }
+
+    this.velocityY += this.gravity;
+    this.y += this.velocityY;
+
+    if (this.y >= 500) {
+      this.y = 500;
+      this.velocityY = 0;
+      this.jumpCount = 0;
+    }
+
+    if (this.jumpCount === 0) {
+      this.frameTimer++;
+      if (this.frameTimer >= this.frameInterval) {
+        this.frameX = (this.frameX + 1) % 4;
+        this.frameTimer = 0;
+      }
+    }
+  }
+
+  draw(ctx) {
+    if (this.jumpCount > 0) {
+      ctx.drawImage(
+        this.jumpImg,
+        this.jumpFrame * 128,
+        0,
+        128,
+        128,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    } else {
+      ctx.drawImage(
+        this.runImg,
+        this.frameX * 128,
+        0,
+        128,
+        128,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    }
+  }
+
+  getHitbox() {
+    return {
+      x: this.x + this.hitbox.xOffset,
+      y: this.y + this.hitbox.yOffset,
+      width: this.hitbox.width,
+      height: this.hitbox.height
+    };
+  }
+}
+
+/* ================= LEVEL 3 OBSTACLES ================= */
+const GROUND_Y = 630;
+const SHORT_H = 64;
+const TALL_H = 160;
+
+class Obstacle {
+  constructor(worldX) {
+    this.worldX = worldX;
+
+    // 🎯 RANDOM SHORT OR TALL
+    this.height = Math.random() < 0.5 ? SHORT_H : TALL_H;
+    this.width = 64;
+    this.y = GROUND_Y - this.height;
+
+    this.img = new Image();
+    this.img.src = "assets/obstacles/rock.png";
+  }
+
+  draw(ctx, camX, playerX) {
+    ctx.drawImage(
+      this.img,
+      this.worldX - camX + playerX,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+
+  getHitbox(camX, playerX) {
+    const x = this.worldX - camX + playerX;
+    return { x, y: this.y, width: this.width, height: this.height };
+  }
+}
+
+/* ================= GAME ================= */
+const canvas = gameCanvas;
+const ctx = canvas.getContext("2d");
+
+const bg = new Image();
+bg.src = "assets/background/background_1.png";
+
+const flagImg = new Image();
+flagImg.src = "assets/ui/flag_3.png";
+
+const LEVEL_END_X = 7200;
+
+const BASE_GAP = 300;
+const VAR_GAP = 320;
+const START_X = 600;
+
+let worldX = 0;
+let player;
+let obstacles = [];
+let playing = false;
+
+function generateObstacles() {
+  obstacles = [];
+  let x = START_X;
+
+  while (x < LEVEL_END_X - 200) {
+    obstacles.push(new Obstacle(x));
+    x += BASE_GAP + Math.random() * VAR_GAP;
+  }
+}
+
+/* ================= UI ================= */
+startBtn.onclick = () => {
+  player = new Player();
+  worldX = 0;
+  generateObstacles();
+  playing = true;
+  menu.classList.remove("active");
+};
+
+/* ================= LOOP ================= */
+function gameLoop() {
+  requestAnimationFrame(gameLoop);
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(bg,0,0,canvas.width,canvas.height);
+
+  if (!playing) return;
+
+  player.update();
+  player.draw(ctx);
+
+  obstacles.forEach(o => {
+    o.draw(ctx, worldX, player.x);
+
+    const p = player.getHitbox();
+    const h = o.getHitbox(worldX, player.x);
+
+    if (
+      p.x < h.x + h.width &&
+      p.x + p.width > h.x &&
+      p.y < h.y + h.height &&
+      p.y + p.height > h.y
+    ) {
+      playing = false;
+      gameOver.classList.add("active");
+    }
+  });
+
+  // 🏁 Finish flag
+  const flagX = LEVEL_END_X - worldX + player.x;
+  ctx.drawImage(flagImg,
+        flagX + 90,
+        492,
+        268,
+        128);
+
+  if (worldX > LEVEL_END_X) {
+    playing = false;
+    win.classList.add("active");
+  }
+
+  worldX += 6; // slightly faster for level 3
+}
+
+gameLoop();
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kid Goku Run – Level 4 (Flight)</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+}
+
+canvas {
+  width: 100vw;
+  height: 100vh;
+  image-rendering: pixelated;
+}
+
+#controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.ctrl-btn {
+  padding: 16px 26px;
+  font-size: 18px;
+  border: 4px solid white;
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+
+#ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: rgba(0,0,0,0.85);
+  pointer-events: auto;
+}
+
+.screen.active { display: flex; }
+
+.title {
+  font-size: 56px;
+  color: white;
+  margin-bottom: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+  <div id="menu" class="screen active">
+    <h1 class="title">LEVEL 4 – FLIGHT</h1>
+    <button class="ctrl-btn" id="startBtn">START</button>
+  </div>
+
+  <div id="gameOver" class="screen">
+    <h1 class="title">GAME OVER</h1>
+    <button class="ctrl-btn" onclick="location.reload()">RETRY</button>
+  </div>
+
+  <div id="win" class="screen">
+    <h1 class="title">LEVEL COMPLETE</h1>
+    <button class="ctrl-btn" onclick="location.reload()">RESTART</button>
+  </div>
+</div>
+
+<canvas id="gameCanvas" width="1024" height="720"></canvas>
+
+<div id="controls">
+  <button class="ctrl-btn" id="upBtn">⬆ UP</button>
+  <button class="ctrl-btn" id="downBtn">⬇ DOWN</button>
+</div>
+
+<script>
+/* ================= INPUT ================= */
+let moveUp = false;
+let moveDown = false;
+
+window.addEventListener("keydown", e => {
+  if (e.code === "ArrowUp") moveUp = true;
+  if (e.code === "ArrowDown") moveDown = true;
+});
+
+window.addEventListener("keyup", e => {
+  if (e.code === "ArrowUp") moveUp = false;
+  if (e.code === "ArrowDown") moveDown = false;
+});
+
+upBtn.onmousedown = () => moveUp = true;
+downBtn.onmousedown = () => moveDown = true;
+
+upBtn.onmouseup =
+downBtn.onmouseup = () => {
+  moveUp = false;
+  moveDown = false;
+};
+
+/* ================= PLAYER (FLYING) ================= */
+class Player {
+  constructor() {
+    this.x = 180;
+    this.y = 300;
+    this.width = 128;
+    this.height = 128;
+
+    this.speedY = 6;
+
+    this.frameX = 0;
+    this.frameTimer = 0;
+    this.frameInterval = 6;
+
+    this.flyImg = new Image();
+    this.flyImg.src = "assets/player/nimbus_fly.png";
+  }
+
+  update() {
+    if (moveUp) this.y -= this.speedY;
+    if (moveDown) this.y += this.speedY;
+
+    this.y = Math.max(40, Math.min(540, this.y));
+
+    this.frameTimer++;
+    if (this.frameTimer >= this.frameInterval) {
+      this.frameX = (this.frameX + 1) % 4;
+      this.frameTimer = 0;
+    }
+  }
+
+  draw(ctx) {
+    ctx.drawImage(
+      this.flyImg,
+      this.frameX * 128,
+      0,
+      128,
+      128,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+
+  getHitbox() {
+    return {
+      x: this.x + 30,
+      y: this.y + 30,
+      width: 60,
+      height: 60
+    };
+  }
+}
+
+/* ================= AIR OBSTACLES ================= */
+class AirObstacle {
+  constructor(worldX, type) {
+    this.worldX = worldX;
+    this.y = 50 + Math.random() * 500;
+
+    this.width = 96;
+    this.height = 96;
+
+    this.frameX = 0;
+    this.frameTimer = 0;
+
+    this.img = new Image();
+    this.img.src =
+      type === "bird"
+        ? "assets/obstacles/bird_fly.png"
+        : "assets/obstacles/crow_fly.png";
+  }
+
+  update() {
+    this.frameTimer++;
+    if (this.frameTimer >= 8) {
+      this.frameX = (this.frameX + 1) % 4;
+      this.frameTimer = 0;
+    }
+  }
+
+  draw(ctx, camX, playerX) {
+    ctx.drawImage(
+      this.img,
+      this.frameX * 128,
+      0,
+      128,
+      128,
+      this.worldX - camX + playerX,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+
+  getHitbox(camX, playerX) {
+    const x = this.worldX - camX + playerX;
+    return { x, y: this.y, width: this.width, height: this.height };
+  }
+}
+
+/* ================= GAME ================= */
+const canvas = gameCanvas;
+const ctx = canvas.getContext("2d");
+
+const bg = new Image();
+bg.src = "assets/background/sky_1.png";
+
+const flagImg = new Image();
+flagImg.src = "assets/ui/flag_4.png";
+
+const LEVEL_END_X = 10000;
+
+let bgX = 0;
+let worldX = 0;
+let player;
+let obstacles = [];
+let playing = false;
+
+/* ================= SETUP ================= */
+function generateObstacles() {
+  obstacles = [];
+  let x = 800;
+
+  while (x < LEVEL_END_X - 200) {
+    const type = Math.random() < 0.5 ? "bird" : "plane";
+    obstacles.push(new AirObstacle(x, type));
+    x += 400 + Math.random() * 400;
+  }
+}
+
+startBtn.onclick = () => {
+  player = new Player();
+  worldX = 0;
+  bgX = 0;
+  generateObstacles();
+  playing = true;
+  menu.classList.remove("active");
+};
+
+/* ================= LOOP ================= */
+function gameLoop() {
+  requestAnimationFrame(gameLoop);
+
+  /* 🌌 BACKGROUND (moves only when playing) */
+  if (playing) {
+    bgX -= 8;
+    if (bgX <= -2048) bgX = 0;
+  }
+
+  ctx.drawImage(bg, bgX, 0, canvas.width + 1024, canvas.height);
+  ctx.drawImage(bg, bgX + canvas.width + 1024, 0, canvas.width + 1024 , canvas.height);
+
+  if (!playing) return;
+
+  player.update();
+  player.draw(ctx);
+
+  obstacles.forEach(o => {
+    o.update();
+    o.draw(ctx, worldX, player.x);
+
+    const p = player.getHitbox();
+    const h = o.getHitbox(worldX, player.x);
+
+    if (
+      p.x < h.x + h.width &&
+      p.x + p.width > h.x &&
+      p.y < h.y + h.height &&
+      p.y + p.height > h.y
+    ) {
+      playing = false;
+      gameOver.classList.add("active");
+    }
+  });
+
+  /* 🏁 FINISH FLAG */
+  const flagX = LEVEL_END_X - worldX + player.x;
+  ctx.drawImage(flagImg, flagX, 230, 300, 400);
+
+  if (worldX > LEVEL_END_X) {
+    playing = false;
+    win.classList.add("active");
+  }
+
+  worldX += 8;
+}
+
+gameLoop();
+</script>
+</body>
+</html>
